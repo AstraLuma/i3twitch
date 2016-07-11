@@ -11,12 +11,16 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         self.user = user
 
     def on_welcome(self, c, e):
-        c.cap('REQ', 'twitch.tv/membership')
+        # I'm not actually sure how to call custom commands, but I'm claiming it anyways.
+        c.cap('REQ', 'twitch.tv/membership', 'twitch.tv/tags', 'twitch.tv/commands')
         c.cap('END')
         c.join('#'+self.user.lower())
 
     def on_join(self, c, e):
         self.notify(e.source.nick, "Joined {}".format(e.target), replyable=False)
+
+    def on_part(self, c, e):
+        self.notify(e.source.nick, "Left {}".format(e.target), replyable=False)
 
     def on_privmsg(self, c, e):
         self.notify(e.source.nick, e.arguments[0])
